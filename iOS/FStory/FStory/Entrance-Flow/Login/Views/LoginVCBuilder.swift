@@ -10,7 +10,7 @@ import Foundation
 class LoginVCBuilder {
     static func make(loginRouter: AnyLoginRouter) -> AnyLoginVC {
         let loginVC = LoginVC()
-        let loginInteractor = LoginInteractorBuilder.make()
+        var loginInteractor = LoginInteractorBuilder.make()
         let loginPresenter = LoginPresenterBuilder.make(
             loginRouter: loginRouter,
             loginVC: loginVC,

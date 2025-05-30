@@ -9,7 +9,7 @@ import Foundation
 
 class LoginInteractorBuilder {
     static func make() -> AnyLoginInteractor {
-        // inject loginService() from network 
+        // inject loginService() from network
         return LoginInteractor()
     }
 }
