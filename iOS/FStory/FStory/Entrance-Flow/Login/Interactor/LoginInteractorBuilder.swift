@@ -10,6 +10,9 @@ import Foundation
 class LoginInteractorBuilder {
     static func make() -> AnyLoginInteractor {
         // inject loginService() from network
-        return LoginInteractor()
+        let loginInteractor = LoginInteractor()
+        let apiService = APIService()
+        loginInteractor.apiService = apiService
+        return loginInteractor
     }
 }

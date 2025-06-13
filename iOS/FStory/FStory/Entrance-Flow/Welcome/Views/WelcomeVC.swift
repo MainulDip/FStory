@@ -10,8 +10,8 @@ import UIKit
 
 protocol AnyWelcomeVC {
     var presenter: AnyWelcomePresenter? { get set }
-    var loginButton: UIButton {get set}
-    var registerButton: UIButton {get set}
+    var loginButton: OnboardingButton {get set}
+    var registerButton: OnboardingButton {get set}
 }
 
 
@@ -19,16 +19,15 @@ class WelcomeVC: UIViewController, AnyWelcomeVC {
     
     var presenter: AnyWelcomePresenter?
     
-    let lgXMiddleYLine = UILayoutGuide()
-    let lgYMiddleXLine = UILayoutGuide()
+    lazy var guide = centerXYLayoutGuide(containerView: self.view)
     
-    lazy var loginButton: UIButton = {
+    lazy var loginButton: OnboardingButton = {
         let button = appCommonBtn(title: K.AppTexts.loginBtnText, titleColor: K.AppColors.buttonTextPrimary, backgroundColor: K.AppColors.buttonBgPrimary)
         button.addTarget(self, action: #selector(handleLoginBtnTapped), for: .touchUpInside)
         return button
     }()
     
-    lazy var registerButton: UIButton = {
+    lazy var registerButton: OnboardingButton = {
         let button = appCommonBtn(title: K.AppTexts.regBtnText, titleColor: K.AppColors.buttonTextPrimary, backgroundColor: K.AppColors.buttonBgPrimary)
         button.addTarget(self, action: #selector(handleRegistrationBtnTapped), for: .touchUpInside)
         return button
@@ -43,6 +42,7 @@ class WelcomeVC: UIViewController, AnyWelcomeVC {
         textView.textAlignment = .center
         textView.isEditable = false
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isScrollEnabled = false
         return textView
     }()
     
@@ -55,6 +55,7 @@ class WelcomeVC: UIViewController, AnyWelcomeVC {
         textView.textAlignment = .center
         textView.isEditable = false
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isScrollEnabled = false
         return textView
     }()
     
@@ -71,50 +72,32 @@ class WelcomeVC: UIViewController, AnyWelcomeVC {
 
 extension WelcomeVC {
     func setupLayout() {
-        setupLayoutGuide()
         setupWelcomText()
         setupButtons()
     }
     
-    func setupLayoutGuide() {
-        view.addLayoutGuide(lgXMiddleYLine)
-        lgXMiddleYLine.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        lgXMiddleYLine.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        lgXMiddleYLine.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        
-        view.addLayoutGuide(lgYMiddleXLine)
-        lgYMiddleXLine.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        lgYMiddleXLine.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        layoutGuideYCenter.heightAnchor.constraint(equalToConstant: 0.1).isActive = true
-        lgYMiddleXLine.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-    }
-    
     func setupWelcomText() {
         view.addSubview(secondaryIntroText)
-        secondaryIntroText.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        secondaryIntroText.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        secondaryIntroText.widthAnchor.constraint(equalToConstant: 300).isActive = true
+//        secondaryIntroText.heightAnchor.constraint(equalToConstant: 50).isActive = true
         secondaryIntroText.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        secondaryIntroText.bottomAnchor.constraint(equalTo: lgYMiddleXLine.topAnchor).isActive = true
+        secondaryIntroText.bottomAnchor.constraint(equalTo: guide.yMiddleXLine.topAnchor).isActive = true
         
         view.addSubview(primaryIntroText)
-        primaryIntroText.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        primaryIntroText.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        primaryIntroText.widthAnchor.constraint(equalToConstant: 300).isActive = true
+//        primaryIntroText.heightAnchor.constraint(equalToConstant: 50).isActive = true
         primaryIntroText.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         primaryIntroText.bottomAnchor.constraint(equalTo: secondaryIntroText.topAnchor).isActive = true
     }
     
     func setupButtons() {
         view.addSubview(loginButton)
-        loginButton.topAnchor.constraint(equalTo: lgYMiddleXLine.bottomAnchor, constant: K.AppSizes.sm).isActive = true
-        loginButton.rightAnchor.constraint(equalTo: lgXMiddleYLine.leftAnchor, constant: -K.AppSizes.sm).isActive = true
-        loginButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        loginButton.topAnchor.constraint(equalTo: guide.yMiddleXLine.bottomAnchor, constant: K.AppSizes.sm).isActive = true
+        loginButton.rightAnchor.constraint(equalTo: guide.xMiddleYLine.leftAnchor, constant: -K.AppSizes.sm).isActive = true
         
         view.addSubview(registerButton)
-        registerButton.topAnchor.constraint(equalTo: lgYMiddleXLine.bottomAnchor, constant: K.AppSizes.sm).isActive = true
-        registerButton.leftAnchor.constraint(equalTo: lgXMiddleYLine.rightAnchor, constant: 0).isActive = true
-        registerButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        registerButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        registerButton.topAnchor.constraint(equalTo: guide.yMiddleXLine.bottomAnchor, constant: K.AppSizes.sm).isActive = true
+        registerButton.leftAnchor.constraint(equalTo: guide.xMiddleYLine.rightAnchor, constant: 0).isActive = true
     }
 }
 
@@ -122,11 +105,13 @@ extension WelcomeVC {
 extension WelcomeVC {
     @objc func handleLoginBtnTapped() {
         print("Login tapped")
+        presenter?.presentLogin()
         // presenter.router.NavigateToLoginScreen
     }
     
     @objc func handleRegistrationBtnTapped() {
         print("Registration tapped")
+        presenter?.presentRegistration()
         // presenter.router.NavigateToRegistrationScreen
     }
 }

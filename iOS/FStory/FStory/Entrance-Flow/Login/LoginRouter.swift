@@ -37,10 +37,14 @@ class LoginRouter: AnyLoginRouter {
         switch vcOrRouter {
         case .presentCurrentVC:
             print("Present Login")
+            let loginVC = LoginVCBuilder.make(loginRouter: self)
+            navigationController.setViewControllers([loginVC], animated: true)
+//            navigationController.popToViewController(loginVC, animated: true)
+//            navigationController.pushViewController(loginVC, animated: true)
             // navigationController.push -> LoginVCBuilder
         case .presentRegistration:
             print("present Reg")
-            // RegistrationRouter(navigationController)
+            let _ = RegistrationRouter(navigationController: navigationController)
         case .presentHome:
             print("present Home")
             // navigationController.push(HomeVCBuilder.make)

@@ -8,12 +8,10 @@
 import Foundation
 
 protocol AnyWelcomeInteractor {
-    var welcomeRouter: AnyWelcomeRouter? { get set }
     static func userAuthStatus() -> UserAuthStatus
 }
 
 class WelcomeInteractor: AnyWelcomeInteractor {
-    var welcomeRouter: AnyWelcomeRouter?
     
     static func userAuthStatus() -> UserAuthStatus {
         userSharedStorageQuery()

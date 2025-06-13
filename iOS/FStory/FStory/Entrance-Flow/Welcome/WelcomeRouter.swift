@@ -63,12 +63,11 @@ class WelcomeRouter: AnyWelcomeRouter {
     
     private func navigateToLoginRouter() {
         // testing perpose, use LoginVCBuilder via LoginRouter, all navigation should happen through routers
-        navigationController.pushViewController(LoginVC(), animated: true)
-        print("showing LoginViewController")
+        let _ = LoginRouter(navigationController: navigationController)
     }
     
     private func navigateToRegistrationRouter() {
-        print("showing RegistrationViewController")
+        let _ = RegistrationRouter(navigationController: navigationController)
     }
     
     private func navigateToHome() {

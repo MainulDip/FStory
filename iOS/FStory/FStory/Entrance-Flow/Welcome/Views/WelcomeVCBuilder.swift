@@ -11,9 +11,7 @@ class WelcomeVCBuilder {
     static func make(router: AnyWelcomeRouter) -> WelcomeVC {
         let vc = WelcomeVC()
         let interactor = WelcomeInteractor()
-        let presenter = WelcomePresenter(router: router, welcomeInteractor: interactor, welcomeVC: vc)
-        vc.presenter = presenter
-        interactor.welcomeRouter = router
+        let presenter = WelcomePresenter(router: router, welcomeInteractor: interactor)
         vc.presenter = presenter
         return vc
     }

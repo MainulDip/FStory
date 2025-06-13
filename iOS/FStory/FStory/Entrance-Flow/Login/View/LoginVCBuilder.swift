@@ -8,16 +8,15 @@
 import Foundation
 
 class LoginVCBuilder {
-    static func make(loginRouter: AnyLoginRouter) -> AnyLoginVC {
+    static func make(loginRouter: AnyLoginRouter) -> LoginVC {
         let loginVC = LoginVC()
-        var loginInteractor = LoginInteractorBuilder.make()
+        let loginInteractor = LoginInteractorBuilder.make()
         let loginPresenter = LoginPresenterBuilder.make(
             loginRouter: loginRouter,
-            loginVC: loginVC,
             loginInteractor: loginInteractor
         )
         loginVC.presenter = loginPresenter
-        loginInteractor.loginPresenter = loginPresenter
+        print("loginVC.presenter = loginPresenter")
         return loginVC
     }
 }
