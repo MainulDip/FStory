@@ -62,7 +62,13 @@ extension LoginPresenter {
     }
     
     func didTapLogin() {
-        
+        // validate login through interactor, if passed
+        // show overlay
+            // setup combine publisher for overlay and listen from the view
+            // setup combine publisher for login request and listen from the view
+        // call interactor for network request to get login session
+        // if login failed (no session returned), remove the overlay and show same login screen with error info
+        // if login passed (session is returned), remove the overlay and navigate to home
     }
     
     func didTapRegister() {

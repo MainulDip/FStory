@@ -11,10 +11,10 @@ import Combine
 
 protocol AnyLoginVC: AnyObject {
     var presenter: AnyLoginPresenter? {get set}
-//    var registrationBtn: OnboardingButton {get set}
+    //    var registrationBtn: OnboardingButton {get set}
 }
 
-class LoginVC: UIViewController, AnyLoginVC {
+class LoginVC: UIViewController, UITextViewDelegate, AnyLoginVC {
     var presenter: AnyLoginPresenter?
     
     // constants
@@ -56,40 +56,47 @@ class LoginVC: UIViewController, AnyLoginVC {
             placeHolderText: passwordPlaceholder
         )
         formRow.setupLayout(superViewSize: self.view.bounds.size)
-//        formRow.labelView.target(forAction: #selector(labelClicked), withSender: nil)
-        
         let text = UITextView()
         return (formRow.self, formRow.labelView, formRow.textFieldView)
     }()
     
     lazy var loginSubmitBtn: OnboardingButton = {
         let btn = appCommonBtn(title: K.AppTexts.loginBtnText, titleColor: K.AppColors.buttonTextPrimary, backgroundColor: K.AppColors.buttonBgPrimary)
-        btn.addTarget(self, action: #selector(handleSubmitBtnTapped), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(handleLoginBtnTapped), for: .touchUpInside)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
     
     lazy var navigateToRegistrationText: UITextView = {
         let textView = UITextView()
-        
-//        textView.attributedText = NSAttributedString(
-//            string: "Don't have an account, register here",
-//            attributes: [
-//                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
-//                NSAttributedString.Key.foregroundColor: UIColor.blue,
-//            ]
-//        )
+        let str = NSMutableAttributedString(
+            string: K.AppTexts.regOnboardingText
+        )
+        str.addAttribute(
+            NSAttributedString.Key.link,
+            value: "navigateToRegistration",
+            range: (str.string as NSString).range(of: K.AppTexts.regOnboardingClickableTExt)
+        )
+//        
+        textView.attributedText = str
+        textView.font = UIFont.systemFont(ofSize: 13)
+        textView.delegate = self
+        textView.isSelectable = true
+        textView.isScrollEnabled = false
+        textView.isEditable = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.backgroundColor = .clear
         
         return textView
     }()
     
     // registration should be a inline link not, containing some text
-//    lazy var registrationBtn: OnboardingButton = {
-//        let btn = appCommonBtn(title: K.AppTexts.regBtnText, titleColor: K.AppColors.buttonTextPrimary, backgroundColor: K.AppColors.buttonBgPrimary)
-//        btn.addTarget(self, action: #selector(handleRegistrationBtnTapped), for: .touchUpInside)
-//        btn.translatesAutoresizingMaskIntoConstraints = false
-//        return btn
-//    }()
+    //    lazy var registrationBtn: OnboardingButton = {
+    //        let btn = appCommonBtn(title: K.AppTexts.regBtnText, titleColor: K.AppColors.buttonTextPrimary, backgroundColor: K.AppColors.buttonBgPrimary)
+    //        btn.addTarget(self, action: #selector(handleRegistrationBtnTapped), for: .touchUpInside)
+    //        btn.translatesAutoresizingMaskIntoConstraints = false
+    //        return btn
+    //    }()
     
     // error status
     // submit btn
@@ -113,22 +120,12 @@ class LoginVC: UIViewController, AnyLoginVC {
 
 
 extension LoginVC {
-    @objc func handleSubmitBtnTapped() {
-        print("Registration btn tapped")
-        presenter?.didTapRegister()
-    }
-    
-    @objc func handleRegistrationBtnTapped() {
-        print("Registration btn tapped")
-        presenter?.didTapRegister()
-    }
-    
     @objc func handleLoginBtnTapped() {
-        
+        presenter?.didTapLogin()
     }
     
-    @objc func labelClicked() {
-        print("label touched")
+    func handleRegistrationBtnTapped() {
+        presenter?.didTapRegister()
     }
 }
 
@@ -137,6 +134,8 @@ extension LoginVC {
     func setupLayout() {
         setupPasswordRow()
         setupEmailRow()
+        setupLoginButton()
+        setupNavigateToRegistrationTextLayout()
     }
     
     func setupPasswordRow() {
@@ -149,5 +148,29 @@ extension LoginVC {
         view.addSubview(emailRow.container)
         emailRow.container.bottomAnchor.constraint(equalTo: passwordRow.container.topAnchor, constant: -spaceBetween * 2).isActive = true
         emailRow.container.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
+    func setupLoginButton() {
+        view.addSubview(loginSubmitBtn)
+        loginSubmitBtn.topAnchor.constraint(equalTo: passwordRow.container.bottomAnchor, constant: spaceBetween * 3).isActive = true
+        loginSubmitBtn.leftAnchor.constraint(equalTo: passwordRow.container.leftAnchor).isActive = true
+    }
+    
+    func setupNavigateToRegistrationTextLayout() {
+        view.addSubview(navigateToRegistrationText)
+        navigateToRegistrationText.topAnchor.constraint(equalTo: loginSubmitBtn.bottomAnchor, constant: 20).isActive = true
+//        navigateToRegistrationText.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        navigateToRegistrationText.leftAnchor.constraint(equalTo: passwordRow.container.leftAnchor).isActive = true
+        navigateToRegistrationText.rightAnchor.constraint(equalTo: passwordRow.container.rightAnchor).isActive = true
+    }
+}
+
+// MARK: User Interaction Handler
+extension LoginVC {
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        let navigateAction = UIAction(title: "navigateToRegistrationScreen") { [weak self] (action) in
+            self?.handleRegistrationBtnTapped()
+        }
+        return navigateAction
     }
 }

@@ -14,7 +14,8 @@ class K {
         static let subWelcomeTitle = "It's a journey, not a destination"
         static let loginBtnText = "Login"
         static let regBtnText = "Register"
-        static let regOnboardingText = "Don't have an account? Create one"
+        static let regOnboardingClickableTExt = "here..."
+        static let regOnboardingText = "Don't have an account? Create one from \(regOnboardingClickableTExt)"
         static let loginOnboardingText = "Have an account already?"
     }
     
